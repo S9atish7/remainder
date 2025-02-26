@@ -1,50 +1,40 @@
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 20px;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f4f4f4;
 }
 
-input {
-    padding: 10px;
-    margin: 10px;
+.container {
+  max-width: 400px;
+  margin: 50px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+textarea, input {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
 }
 
 button {
-    padding: 10px;
-    background-color: blue;
-    color: white;
-    border: none;
-    cursor: pointer;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: darkblue;
+  background-color: #218838;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    margin: 10px 0;
-    padding: 10px;
-    background: #f4f4f4;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-li button {
-    background-color: red;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-}
-
-li button:hover {
-    background-color: darkred;
+.reminder-list {
+  margin-top: 20px;
+  font-weight: bold;
 }
