@@ -7,15 +7,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <h2>Reminder App</h2>
-    <input type="text" id="task" placeholder="Enter task">
-    <input type="datetime-local" id="reminder-time">
-    <button id="set-reminder">Set Reminder</button>
-
-    <h3>Upcoming Reminders</h3>
-    <ul id="reminder-list"></ul>
-
+    <div class="container">
+        <h1>Reminder App</h1>
+        <textarea class="enter-text" placeholder="Enter task"></textarea><br>
+        <input type="datetime-local" class="time-input"><br>
+        <button class="speak-btn">Set Reminder</button>
+        <div class="reminder-list"></div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
