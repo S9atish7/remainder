@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Reminders</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Reminder App</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <h2>My Reminders</h2>
-    <input type="text" id="reminder-input" placeholder="Enter a reminder">
-    <button id="add-reminder-btn">Add Reminder</button>
+    <h2>Reminder App</h2>
+    <input type="text" id="task" placeholder="Enter task">
+    <input type="datetime-local" id="reminder-time">
+    <button id="set-reminder">Set Reminder</button>
+
+    <h3>Upcoming Reminders</h3>
     <ul id="reminder-list"></ul>
 
     <script src="script.js"></script>
