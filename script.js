@@ -3,7 +3,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const reminderInput = document.getElementById("reminder-input");
   const addReminderBtn = document.getElementById("add-reminder-btn");
 
-  // Load reminders from localStorage
+  if (!reminderList || !reminderInput || !addReminderBtn) {
+    console.error("One or more elements are missing!");
+    return;
+  }
+
   function loadReminders() {
     const reminders = JSON.parse(localStorage.getItem("reminders")) || [];
     reminderList.innerHTML = "";
@@ -18,10 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Add a new reminder
   addReminderBtn.addEventListener("click", function () {
     const reminderText = reminderInput.value.trim();
-    if (reminderText) {
+    if (reminderText !== "") {
       const reminders = JSON.parse(localStorage.getItem("reminders")) || [];
       reminders.push(reminderText);
       localStorage.setItem("reminders", JSON.stringify(reminders));
@@ -30,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Delete a reminder
   function deleteReminder(index) {
     const reminders = JSON.parse(localStorage.getItem("reminders")) || [];
     reminders.splice(index, 1);
@@ -38,6 +40,5 @@ document.addEventListener("DOMContentLoaded", function () {
     loadReminders();
   }
 
-  // Load reminders on page load
   loadReminders();
 });
