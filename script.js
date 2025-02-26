@@ -20,8 +20,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function checkReminders() {
         const now = new Date().toISOString().slice(0, 16);
+        console.log("Checking reminders at:", now);  
+
         const reminders = JSON.parse(localStorage.getItem("reminders")) || [];
+        console.log("Stored reminders:", reminders);
+
         reminders.forEach((reminder, index) => {
+            console.log(`Checking: ${reminder.time} vs ${now}`);
             if (reminder.time === now) {
                 alert(`Reminder: ${reminder.task}`);
                 speakReminder(reminder.task);
@@ -31,10 +36,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function speakReminder(text) {
-        const speech = new SpeechSynthesisUtterance(`Reminder: ${text}`);
-        speech.lang = "en-US";
-        speech.rate = 1;
-        speechSynthesis.speak(speech);
+        if ('speechSynthesis' in window) {
+            const speech = new SpeechSynthesisUtterance(`Reminder: ${text}`);
+            speech.lang = "en-US";
+            speech.rate = 1;
+            speech.onstart = () => console.log("Speech started...");
+            speech.onend = () => console.log("Speech finished.");
+            speechSynthesis.speak(speech);
+        } else {
+            console.log("Speech Synthesis not supported.");
+        }
     }
 
     setReminderBtn.addEventListener("click", function () {
