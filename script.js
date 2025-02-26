@@ -1,73 +1,86 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const taskInput = document.getElementById("task");
-    const timeInput = document.getElementById("reminder-time");
-    const setReminderBtn = document.getElementById("set-reminder");
-    const reminderList = document.getElementById("reminder-list");
+    let speakBtn = document.querySelector('.speak-btn');
+    let textArea = document.querySelector('.enter-text');
+    let timeInput = document.querySelector('.time-input');
+    let reminderList = document.querySelector('.reminder-list');
 
     function loadReminders() {
-        const reminders = JSON.parse(localStorage.getItem("reminders")) || [];
+        let reminders = JSON.parse(localStorage.getItem("reminders")) || [];
+        displayReminders(reminders);
+    }
+
+    function displayReminders(reminders) {
         reminderList.innerHTML = "";
         reminders.forEach((reminder, index) => {
-            const li = document.createElement("li");
-            li.textContent = `${reminder.task} at ${reminder.time}`;
-            const deleteBtn = document.createElement("button");
+            let div = document.createElement("div");
+            div.textContent = `📌 ${reminder.task} - ⏰ ${reminder.time}`;
+            let deleteBtn = document.createElement("button");
             deleteBtn.textContent = "❌";
             deleteBtn.onclick = () => deleteReminder(index);
-            li.appendChild(deleteBtn);
-            reminderList.appendChild(li);
+            div.appendChild(deleteBtn);
+            reminderList.appendChild(div);
         });
     }
 
-    function checkReminders() {
-        const now = new Date().toISOString().slice(0, 16);
-        console.log("Checking reminders at:", now);  
+    function scheduleReminder(task, time) {
+        let taskTime = new Date(time);
+        let now = new Date();
+        let timeDiff = taskTime - now;
 
-        const reminders = JSON.parse(localStorage.getItem("reminders")) || [];
-        console.log("Stored reminders:", reminders);
-
-        reminders.forEach((reminder, index) => {
-            console.log(`Checking: ${reminder.time} vs ${now}`);
-            if (reminder.time === now) {
-                alert(`Reminder: ${reminder.task}`);
-                speakReminder(reminder.task);
-                deleteReminder(index);
-            }
-        });
-    }
-
-    function speakReminder(text) {
-        if ('speechSynthesis' in window) {
-            const speech = new SpeechSynthesisUtterance(`Reminder: ${text}`);
-            speech.lang = "en-US";
-            speech.rate = 1;
-            speech.onstart = () => console.log("Speech started...");
-            speech.onend = () => console.log("Speech finished.");
-            speechSynthesis.speak(speech);
+        if (timeDiff > 0) {
+            setTimeout(() => {
+                sendVoiceMessage(task);
+                sendNotification(task);
+            }, timeDiff);
         } else {
-            console.log("Speech Synthesis not supported.");
+            alert("Invalid time! Please enter a future time.");
         }
     }
 
-    setReminderBtn.addEventListener("click", function () {
-        const task = taskInput.value.trim();
-        const time = timeInput.value;
-        if (task && time) {
-            const reminders = JSON.parse(localStorage.getItem("reminders")) || [];
-            reminders.push({ task, time });
+    function sendVoiceMessage(task) {
+        let speech = new SpeechSynthesisUtterance(`Reminder: ${task}`);
+        speech.lang = 'en-US';
+        speech.rate = 1;
+        speech.volume = 1;
+        speech.pitch = 1;
+        speechSynthesis.speak(speech);
+    }
+
+    function sendNotification(task) {
+        if (Notification.permission === "granted") {
+            new Notification("Reminder", { body: task });
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification("Reminder", { body: task });
+                }
+            });
+        }
+    }
+
+    speakBtn.addEventListener('click', () => {
+        let taskText = textArea.value.trim();
+        let taskTime = timeInput.value;
+
+        if (taskText && taskTime) {
+            let reminders = JSON.parse(localStorage.getItem("reminders")) || [];
+            reminders.push({ task: taskText, time: taskTime });
             localStorage.setItem("reminders", JSON.stringify(reminders));
-            taskInput.value = "";
-            timeInput.value = "";
+
+            scheduleReminder(taskText, taskTime);
             loadReminders();
+            alert("Reminder set successfully!");
+        } else {
+            alert("Please enter a valid task and time.");
         }
     });
 
     function deleteReminder(index) {
-        const reminders = JSON.parse(localStorage.getItem("reminders")) || [];
+        let reminders = JSON.parse(localStorage.getItem("reminders")) || [];
         reminders.splice(index, 1);
         localStorage.setItem("reminders", JSON.stringify(reminders));
         loadReminders();
     }
 
     loadReminders();
-    setInterval(checkReminders, 60000);
 });
