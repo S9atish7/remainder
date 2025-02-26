@@ -1,12 +1,18 @@
-document.addEventListener("DOMContentLoaded", function () {
+window.onload = function () {
     let speakBtn = document.querySelector('.speak-btn');
     let textArea = document.querySelector('.enter-text');
     let timeInput = document.querySelector('.time-input');
     let reminderList = document.querySelector('.reminder-list');
 
+    if (!speakBtn || !textArea || !timeInput || !reminderList) {
+        console.error("One or more elements are missing in the HTML.");
+        return;
+    }
+
     function loadReminders() {
         let reminders = JSON.parse(localStorage.getItem("reminders")) || [];
         displayReminders(reminders);
+        checkReminders();
     }
 
     function displayReminders(reminders) {
@@ -58,6 +64,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function checkReminders() {
+        let now = new Date().toISOString().slice(0, 16);
+        let reminders = JSON.parse(localStorage.getItem("reminders")) || [];
+
+        reminders.forEach((reminder, index) => {
+            if (reminder.time === now) {
+                sendVoiceMessage(reminder.task);
+                sendNotification(reminder.task);
+                deleteReminder(index);
+            }
+        });
+    }
+
     speakBtn.addEventListener('click', () => {
         let taskText = textArea.value.trim();
         let taskTime = timeInput.value;
@@ -83,4 +102,5 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     loadReminders();
-});
+    setInterval(checkReminders, 60000);
+};
